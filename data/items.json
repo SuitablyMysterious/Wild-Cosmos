@@ -1,12 +1,9 @@
 {
     "items": [
         {
-            "Armour": [
-                {
-                    "name": "Light armour",
-                    "abilities": "*Leather armour and makeshift armour, or heavier armour that only covers vital areas.*\nThe user changes their Def value to 7+."
-                }
-            ]
+            "name": "",
+            "abilities": ""
+
         }
     ]
 }

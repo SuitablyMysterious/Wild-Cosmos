@@ -1,12 +1,14 @@
 {
     "themes": [
         {
-            "name": "Cult of Pox",
+            "name": "",
             "introduction": "",
             "arcane_disciplines": [
-                "Pyrokinisis"
+                ""
             ],
-            "contents": "**Brimstone Weapons**\nModels with this theme replace the Flame ability of any of their weapons (including arcane weapons) with a Brimstone ability of equal value.\nBrimstone is an Effect ability, inflicting brimstone tokens. Brimstone tokens are treated as flame tokens for all purposes, but models that would be protected from flame tokens (for example, because they have the Immune (Flame) ability or because they are in water) are not protected from the effects of brimstone tokens.\nBrimstone weapons are treated as Flame weapons for the purpose of rules that interact with Flame weapons."
+            "contents": "",
+            "available_items": "",
+            "available_weapons": ""
         }
     ]
 }
