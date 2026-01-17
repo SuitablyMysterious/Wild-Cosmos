@@ -1,7 +1,7 @@
 const itemsLocation = "https://raw.githubusercontent.com/SuitablyMysterious/Wild-Cosmos/refs/heads/data/data/items.json";
 const themesLocation = "https://raw.githubusercontent.com/SuitablyMysterious/Wild-Cosmos/refs/heads/data/data/themes.json";
 const weaponsLocation = "https://raw.githubusercontent.com/SuitablyMysterious/Wild-Cosmos/refs/heads/data/data/weapons.json";
-const templateLocation = "https://raw.githubusercontent.com/SuitablyMysterious/Wild-Cosmos/refs/heads/data/templates/template.json"
+const templateLocation = "https://raw.githubusercontent.com/SuitablyMysterious/Wild-Cosmos/refs/heads/data/templates/template.html"
 
 async function loadThemes() {
     const response = await fetch(themesLocation);
