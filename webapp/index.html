@@ -9,8 +9,9 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-    <main>
-        <input id="themeName" placeholder="Enter theme name">
+    <main class="simple-ui">
+        <label for="themeName">Theme name</label>
+        <input id="themeName" type="text" placeholder="Enter theme name">
 
         <div class="button-container">
             <button id="generatePdf">Generate PDF</button>
@@ -23,22 +24,40 @@
         document.getElementById('generatePdf').addEventListener('click', async () => {
             const name = document.getElementById('themeName').value.trim();
             if (!name) return alert('Please enter a theme name');
+
+            const generateBtn = document.getElementById('generatePdf');
+            const downloadBtn = document.getElementById('downloadHtml');
+            generateBtn.disabled = true;
+            downloadBtn.disabled = true;
+
             try {
                 await window.generateThemeDocument(name, 'pdf');
             } catch (err) {
                 console.error(err);
                 alert('Error generating PDF: ' + (err.message || err));
+            } finally {
+                generateBtn.disabled = false;
+                downloadBtn.disabled = false;
             }
         });
 
         document.getElementById('downloadHtml').addEventListener('click', async () => {
             const name = document.getElementById('themeName').value.trim();
             if (!name) return alert('Please enter a theme name');
+
+            const generateBtn = document.getElementById('generatePdf');
+            const downloadBtn = document.getElementById('downloadHtml');
+            generateBtn.disabled = true;
+            downloadBtn.disabled = true;
+
             try {
                 await window.generateThemeDocument(name, 'html');
             } catch (err) {
                 console.error(err);
                 alert('Error downloading HTML: ' + (err.message || err));
+            } finally {
+                generateBtn.disabled = false;
+                downloadBtn.disabled = false;
             }
         });
     </script>
