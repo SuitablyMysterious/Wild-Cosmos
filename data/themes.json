@@ -3,12 +3,9 @@
         {
             "name": "",
             "introduction": "",
-            "arcane_disciplines": [
-                ""
-            ],
             "contents": "",
-            "available_items": "",
-            "available_weapons": ""
+            "availableItems": "",
+            "availableWeapons": ""
         }
     ]
 }
