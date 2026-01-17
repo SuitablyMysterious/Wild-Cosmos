@@ -13,3 +13,9 @@ p {
     font-family: "Calibri";
     font-size: 9px;
 }
+
+tr {
+    font-family: "Calibri";
+    font-size: 9px;
+    font-weight: bold;
+}
