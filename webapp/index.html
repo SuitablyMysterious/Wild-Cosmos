@@ -2,11 +2,45 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport">
-    <script defer src="https://cdn.jsdelivr.com/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Theme Generator</title>
+    <link rel="stylesheet" href="style.css">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
-    
+    <main>
+        <input id="themeName" placeholder="Enter theme name">
+
+        <div class="button-container">
+            <button id="generatePdf">Generate PDF</button>
+            <button id="downloadHtml">Download HTML</button>
+        </div>
+    </main>
+
+    <script src="app.js"></script>
+    <script>
+        document.getElementById('generatePdf').addEventListener('click', async () => {
+            const name = document.getElementById('themeName').value.trim();
+            if (!name) return alert('Please enter a theme name');
+            try {
+                await window.generateThemeDocument(name, 'pdf');
+            } catch (err) {
+                console.error(err);
+                alert('Error generating PDF: ' + (err.message || err));
+            }
+        });
+
+        document.getElementById('downloadHtml').addEventListener('click', async () => {
+            const name = document.getElementById('themeName').value.trim();
+            if (!name) return alert('Please enter a theme name');
+            try {
+                await window.generateThemeDocument(name, 'html');
+            } catch (err) {
+                console.error(err);
+                alert('Error downloading HTML: ' + (err.message || err));
+            }
+        });
+    </script>
 </body>
 </html>
