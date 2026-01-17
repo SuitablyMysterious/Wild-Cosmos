@@ -10,29 +10,69 @@ const cssLocation = "https://raw.githubusercontent.com/SuitablyMysterious/Wild-C
 // functions to load json files
 
 async function loadThemes() {
-    const response = await fetch(themesLocation);
-    return await response.json();
+    try {
+        const response = await fetch(themesLocation);
+        if (!response.ok) {
+            throw new Error(`Failed to load themes (status ${response.status})`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error loading themes data:", error);
+        throw new Error("Could not load themes data. Please try again later.");
+    }
 }
 async function loadWeapons() {
-    const response = await fetch(weaponsLocation);
-    return await response.json();
+    try {
+        const response = await fetch(weaponsLocation);
+        if (!response.ok) {
+            throw new Error(`Failed to load weapons (status ${response.status})`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error loading weapons data:", error);
+        throw new Error("Could not load weapons data. Please try again later.");
+    }
 }
 async function loadItems() {
-    const response = await fetch(itemsLocation);
-    return await response.json();
+    try {
+        const response = await fetch(itemsLocation);
+        if (!response.ok) {
+            throw new Error(`Failed to load items (status ${response.status})`);
+        }
+        return await response.json();
+    } catch (error) {
+        console.error("Error loading items data:", error);
+        throw new Error("Could not load items data. Please try again later.");
+    }
 }
 
 
 // load template files
 
 async function loadTemplate() {
-    const response = await fetch(templateLocation);
-    return await response.text();
+    try {
+        const response = await fetch(templateLocation);
+        if (!response.ok) {
+            throw new Error(`Failed to load HTML template (status ${response.status})`);
+        }
+        return await response.text();
+    } catch (error) {
+        console.error("Error loading HTML template:", error);
+        throw new Error("Could not load the HTML template. Please try again later.");
+    }
 }
 
 async function loadCSS() {
-    const response = await fetch(cssLocation);
-    return await response.text();
+    try {
+        const response = await fetch(cssLocation);
+        if (!response.ok) {
+            throw new Error(`Failed to load CSS (status ${response.status})`);
+        }
+        return await response.text();
+    } catch (error) {
+        console.error("Error loading CSS:", error);
+        throw new Error("Could not load the CSS. Please try again later.");
+    }
 }
 
 
@@ -54,53 +94,75 @@ async function populateHTML(theme) {
         loadItems(),
         loadCSS()
     ]);
-    const availableItemNames = theme.availableItems ? 
-        theme.availableItems.split(',').map(s => s.trim()) : [];
-    const availableWeaponNames = theme.availableWeapons ? 
-        theme.availableWeapons.split(',').map(s => s.trim()) : [];
-    const themeWeapons = allWeapons.weapons.filter(w => 
+    const availableItemsRaw = theme.availableItems || theme.available_items || '';
+    const availableItemNames = availableItemsRaw
+        ? availableItemsRaw.split(',').map(s => s.trim())
+        : [];
+    const availableWeaponsRaw = theme.availableWeapons || theme.available_weapons || '';
+    const availableWeaponNames = availableWeaponsRaw
+        ? availableWeaponsRaw.split(',').map(s => s.trim())
+        : [];
+    const weaponsList = allWeapons && Array.isArray(allWeapons.weapons) ? allWeapons.weapons : [];
+    const itemsList = allItems && Array.isArray(allItems.items) ? allItems.items : [];
+    const themeWeapons = weaponsList.filter(w => 
         availableWeaponNames.includes(w.name)
     );
-    const themeItems = allItems.items.filter(i => 
+    const themeItems = itemsList.filter(i => 
         availableItemNames.includes(i.name)
     );
     const parser = new DOMParser();
     const doc = parser.parseFromString(template, 'text/html');
     doc.title = theme.name;
-    doc.getElementById('pageTitle').textContent = theme.name;
-    doc.querySelector('h1').textContent = theme.name;
+    
+    const pageTitle = doc.getElementById('pageTitle');
+    if (pageTitle) pageTitle.textContent = theme.name;
+    
+    const h1 = doc.querySelector('h1');
+    if (h1) h1.textContent = theme.name;
+    
     const paragraphs = doc.querySelectorAll('p');
-    paragraphs[0].textContent = theme.introduction;
-    paragraphs[1].textContent = theme.contents;
+    if (paragraphs[0]) paragraphs[0].textContent = theme.introduction;
+    if (paragraphs[1]) paragraphs[1].textContent = theme.contents;
+    
     const weaponsTableBody = doc.querySelector('table tbody');
-    weaponsTableBody.innerHTML = '';
-
+    if (weaponsTableBody) {
+        weaponsTableBody.innerHTML = '';
 
     themeWeapons.forEach(weapon => {
         const row = doc.createElement('tr');
-        row.innerHTML = `
-            <td>${weapon.name}</td>
-            <td>${weapon.rng}</td>
-            <td>${weapon.atk}</td>
-            <td>${weapon.pen}</td>
-            <td>${weapon.str}</td>
-            <td>${weapon.abilities}</td>
-            <td>${weapon['⬓']}</td>
-        `;
+        const cells = [
+            weapon.name,
+            weapon.rng,
+            weapon.atk,
+            weapon.pen,
+            weapon.str,
+            weapon.abilities,
+            weapon['⬓']
+        ];
+        cells.forEach(cellContent => {
+            const td = doc.createElement('td');
+            td.textContent = cellContent;
+            row.appendChild(td);
+        });
         weaponsTableBody.appendChild(row);
     });
+    }
 
     
     const itemsTableBody = doc.querySelector('#itemsTable tbody');
-    itemsTableBody.innerHTML = '';
-    themeItems.forEach(item => {
-        const row = doc.createElement('tr');
-        row.innerHTML = `
-            <td>${item.name}</td>
-            <td>${item.abilities}</td>
-        `;
-        itemsTableBody.appendChild(row);
-    });
+    if (itemsTableBody) {
+        itemsTableBody.innerHTML = '';
+        themeItems.forEach(item => {
+            const row = doc.createElement('tr');
+            const cells = [item.name, item.abilities];
+            cells.forEach(cellContent => {
+                const td = doc.createElement('td');
+                td.textContent = cellContent;
+                row.appendChild(td);
+            });
+            itemsTableBody.appendChild(row);
+        });
+    }
     const fullHTML = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -165,6 +227,11 @@ async function downloadPDF(html, filename) {
 
 async function generateThemeDocument(themeName, format = 'pdf') {
     const themesData = await loadThemes();
+
+    if (!themesData || !Array.isArray(themesData.themes)) {
+        throw new Error('Failed to load themes data');
+    }
+    
     const theme = themesData.themes.find(t => t.name === themeName);
     
     if (!theme) {
@@ -176,7 +243,12 @@ async function generateThemeDocument(themeName, format = 'pdf') {
     if (format === 'html') {
         downloadHTML(html, `${themeName}.html`);
     } else {
-        downloadPDF(html, `${themeName}.pdf`);
+        try {
+            await downloadPDF(html, `${themeName}.pdf`);
+        } catch (error) {
+            console.error('Error generating PDF:', error);
+            throw new Error('Failed to generate PDF. Please try again.');
+        }
     }
 }
 
