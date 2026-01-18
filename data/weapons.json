@@ -1,13 +1,13 @@
 {
     "weapons": [
         {
-            "name": "",
-            "rng": "",
-            "atk": "",
-            "pen": "",
-            "str": "",
-            "abilities": "",
-            "⬓": ""
+            "name": "test rifle",
+            "rng": "24\"",
+            "atk": "1",
+            "pen": "0",
+            "str": "1",
+            "abilities": "Screamer",
+            "⬓": "0"
         }
     ]
 }

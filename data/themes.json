@@ -1,11 +1,11 @@
 {
     "themes": [
         {
-            "name": "",
-            "introduction": "",
-            "contents": "",
-            "availableItems": "",
-            "availableWeapons": ""
+            "name": "test",
+            "introduction": "The quick brown fox jumped over the lazy dog.",
+            "contents": "This model is a cheerleader that whenever provoked savagely screams the word \"te-sssssss-t\" at you.",
+            "availableItems": "tester",
+            "availableWeapons": "test rifle"
         }
     ]
 }
