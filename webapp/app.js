@@ -90,7 +90,7 @@ async function populateHTML(theme) {
         weaponsTableBody.appendChild(row);
     });
 
-    
+
     const itemsTableBody = doc.querySelector('#itemsTable tbody');
     itemsTableBody.innerHTML = '';
     themeItems.forEach(item => {
@@ -137,29 +137,37 @@ function downloadHTML(html, filename) {
 
 
 async function downloadPDF(html, filename) {
-    // Create a temporary container
-    const container = document.createElement('div');
-    container.innerHTML = html;
-    container.style.position = 'absolute';
-    container.style.left = '-9999px';
-    document.body.appendChild(container);
+    // Create a temporary iframe
+    const iframe = document.createElement('iframe');
+    iframe.style.position = 'absolute';
+    iframe.style.width = '210mm';
+    iframe.style.height = '297mm';
+    iframe.style.left = '-9999px';
+    document.body.appendChild(iframe);
+    
+    const iframeDoc = iframe.contentDocument || iframe.contentWindow.document;
+    iframeDoc.open();
+    iframeDoc.write(html);
+    iframeDoc.close();
 
-    // Configure html2pdf options
+    await new Promise(resolve => {
+        iframe.onload = () => setTimeout(resolve, 1500);
+        setTimeout(resolve, 2000);
+    });
+
     const opt = {
         margin: 10,
         filename: filename,
         image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
+        html2canvas: { scale: 2, useCORS: true },
         jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
     };
 
-    // Generate PDF
-    await html2pdf().set(opt).from(container).save();
+    const element = iframeDoc.body;
+    await html2pdf().set(opt).from(element).save();
 
-    // Clean up
-    document.body.removeChild(container);
+    document.body.removeChild(iframe);
 }
-
 
 
 
